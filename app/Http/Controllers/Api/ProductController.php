@@ -132,8 +132,8 @@ class ProductController extends Controller
             'attributes' => ProductAttributesResource::collection($product->attributes) ,
             'gallery' => $this->filesResource($product->files),
             'comments' => CommentResource::collection($product->comments->where('status',Constant::PUBLISHED)),
-            'meta_title' => $product->meta_title,
-            'meta_description' => $product->meta_description,
+            'meta_title' => strip_tags($product->meta_title),
+            'meta_description' => strip_tags($product->meta_description),
             'canonical_url' => $product->canonical_url,
         ];
     }

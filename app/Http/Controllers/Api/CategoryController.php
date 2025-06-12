@@ -70,8 +70,8 @@ class CategoryController extends Controller
             'sub_categories' => CategoriesResource::collection(
                 $category->subCategories
             ),
-            'meta_title' => $category->meta_title,
-            'meta_description' => $category->meta_description,
+            'meta_title' => strip_tags($category->meta_title),
+            'meta_description' => strip_tags($category->meta_description),
             'canonical_url' => $category->canonical_url,
         ];
     }
