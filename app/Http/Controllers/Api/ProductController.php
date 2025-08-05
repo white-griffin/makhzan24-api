@@ -135,6 +135,8 @@ class ProductController extends Controller
             'meta_title' => strip_tags($product->meta_title),
             'meta_description' => strip_tags($product->meta_description),
             'canonical_url' => $product->canonical_url,
+            'category_name' => $product->category->title,
+            'category_slug' => $product->category->slug,
         ];
     }
 }
