@@ -19,6 +19,8 @@ class PermissionConstant
     const COMMENTS = 'مدیریت نظرات';
     const CALL_REQUESTS = 'مدیریت درخواست های تماس';
     const EMPLOYEES = 'مدیریت اعضا';
+    const INSTAGRAM_POSTS = 'مدیریت پست های اینستاگرام';
+    const SLIDERS = 'مدیریت اسلایدر';
 
     public static function getGropNamePermissions($key = null)
     {
@@ -34,7 +36,9 @@ class PermissionConstant
             'blogs' => self::BLOGS,
             'comments' => self::COMMENTS,
             'call-requests' => self::CALL_REQUESTS,
-            'employees' => self::EMPLOYEES
+            'employees' => self::EMPLOYEES,
+            'instagram_posts' => self::INSTAGRAM_POSTS,
+            'sliders' => self::SLIDERS
         ];
 
         return (!is_null($key)) ? $groupPermissions[$key] : $groupPermissions;
@@ -53,7 +57,9 @@ class PermissionConstant
             self::blogPermissions(),
             self::commentsPermissions(),
             self::callRequestsPermissions(),
-            self::employeesPermissions()
+            self::employeesPermissions(),
+            self::instagramPostsPermissions(),
+            self::slidersPermissions()
         ];
     }
 
@@ -467,4 +473,33 @@ class PermissionConstant
         ];
     }
 
+    private static function instagramPostsPermissions()
+    {
+        return [
+
+            [
+                'entity' => 'instagram_posts',
+                'page' => 'مدیریت پست های اینستاگرام ',
+                'name' => 'instagram_posts.all',
+                'persian_name' => '  مدیریت پست های اینستاگرام ',
+
+            ],
+
+        ];
+    }
+
+    private static function slidersPermissions()
+    {
+        return [
+
+            [
+                'entity' => 'sliders',
+                'page' => 'مدیریت اسلایدر ',
+                'name' => 'sliders.all',
+                'persian_name' => '  مدیریت اسلایدر ',
+
+            ],
+
+        ];
+    }
 }

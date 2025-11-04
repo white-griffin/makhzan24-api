@@ -20,21 +20,15 @@ class SliderController extends Controller
 
     public function store()
     {
-
-        ;
         DB::beginTransaction();
         try {
-            $slider = new Slider;
-            $slider->name = $this->uploadFile(request()->file('file'), Constant::SLIDERS_FILE_PATH);
-            $slider->type = Slider::getFileType(request()->file('file'));
-            $slider->link = request('link');
-            $slider->title = request('title');
-            $slider->save();
+
+            $sliderData = $this->getSliderData();
+            $slider = Slider::create($sliderData);
             DB::commit();
             ApiResponse::Success('عملیات موفق');
         }catch (\Exception $e){
             DB::rollBack();
-
             ApiResponse::Fail(500,'خطا در عملیات');
         }
     }
@@ -43,7 +37,7 @@ class SliderController extends Controller
     {
         DB::beginTransaction();
         try {
-            $sliderData = $this->getUpdateSliderData();
+            $sliderData = $this->getSliderData();
             $slider->update($sliderData);
             DB::commit();
             return redirect()->route('admin.sliders.list')->with('success', 'عملیات شما با موفقیت انجام شد');
@@ -66,11 +60,12 @@ class SliderController extends Controller
         ApiResponse::Success('عملیات موفق');
     }
 
-    private function getUpdateSliderData()
+    private function getSliderData()
     {
         $data = [
             'link' => request('link'),
-            'title' => request('title')
+            'title' => request('title'),
+            'type' => 'image'
         ];
 
         if (request()->hasFile('file')) {

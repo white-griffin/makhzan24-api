@@ -16,7 +16,7 @@
     <ul style="list-style: none; padding: 0;">
         <li style="display: flex; justify-content: space-between; padding: 8px 0;">
             <span>جمع قیمت کالاها:</span>
-            <span>{{ number_format($order->order_amount) }} تومان</span>
+            <span>{{ number_format($order->order_amount + $order->discount_amount) }} تومان</span>
         </li>
         <li style="display: flex; justify-content: space-between; padding: 8px 0;">
             <span>هزینه ارسال:</span>

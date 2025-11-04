@@ -16,9 +16,9 @@ class TorobProductsResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "page_unique" => $this->id,
+            "page_unique" => (string)$this->id,
             "page_url" => 'https://magrico.ir/single/'.$this->slug,
-            "product_group_id" => $this->category->id,
+            "product_group_id" => (string)$this->category->id,
             "title" => $this->title,
             "current_price" => (int)$this->price,
             "availability" => $this->status == Constant::ACTIVE,
@@ -28,7 +28,7 @@ class TorobProductsResource extends JsonResource
             "date_added" => $this->created_at->setTimezone('Asia/Tehran')->format('Y-m-d\TH:i:sP'),
             "date_updated" => $this->updated_at->setTimezone('Asia/Tehran')->format('Y-m-d\TH:i:sP'),
             "seller_city" => "مشهد"
-            
+
         ];
     }
 
@@ -39,7 +39,7 @@ class TorobProductsResource extends JsonResource
         $files = [
             $mainImage
         ];
-        
+
         foreach ($allFiles as $file){
             $files[] = asset(Constant::PRODUCT_GALLERY_PATH.$file->name);
         }
@@ -51,7 +51,7 @@ class TorobProductsResource extends JsonResource
         foreach ($allAttributes as $attribute ){
             $attributes[$attribute->key] = $attribute->value;
         }
-		return $attributes;
+        return empty($attributes) ? new \stdClass() : $attributes;
     }
 
 }

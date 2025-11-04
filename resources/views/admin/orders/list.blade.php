@@ -266,12 +266,12 @@
                                     </td>
                                     <td>{!! $order->webPresent()->status !!}</td>
                                     <td>
-                                        <select class="form-select form-select-sm delivery-status-select" 
-                                                data-order-id="{{ $order->id }}" 
+                                        <select class="form-select form-select-sm delivery-status-select"
+                                                data-order-id="{{ $order->id }}"
                                                 name="delivery_status">
                                             @foreach(\App\Constants\Constant::getDeliveryStatusesViewer() as $status)
-                                                <option value="{{ $status['id'] }}" 
-                                                        {{ isset($order->delivery_status) && $order->delivery_status == $status['id'] ? 'selected' : 
+                                                <option value="{{ $status['id'] }}"
+                                                        {{ isset($order->delivery_status) && $order->delivery_status == $status['id'] ? 'selected' :
                                                            (!isset($order->delivery_status) && $status['id'] == \App\Constants\Constant::PENDING ? 'selected' : '') }}>
                                                     {{ $status['title'] }}
                                                 </option>
@@ -380,6 +380,9 @@
                                                                         <li class="list-group-item">
                                                                             <strong>آدرس:</strong> <span id="receiver-address">{{$order->receiver->address}}</span>
                                                                         </li>
+                                                                        <li class="list-group-item">
+                                                                            <strong>کد پستی:</strong> <span id="receiver-zipcode">{{$order->receiver->zip_code}}</span>
+                                                                        </li>
                                                                     </ul>
                                                                 @else
                                                                     <a class="btn btn-danger" href="">
@@ -483,7 +486,7 @@
             $('.delivery-status-select').on('change', function() {
                 const orderId = $(this).data('order-id');
                 const deliveryStatus = $(this).val();
-                
+
                 $.ajax({
                     url: "{{ route('admin.orders.update-delivery-status') }}",
                     type: "POST",

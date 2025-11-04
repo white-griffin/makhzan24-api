@@ -2,9 +2,11 @@
 
 namespace App\Http\Resources;
 
-use App\Constants\Constant;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Constants\Constant;
+use App\Helpers\Format\Date;
+use App\Http\Resources\{CommentResource, ProductAttributesResource};
 
 class ProductResource extends JsonResource
 {
@@ -35,6 +37,7 @@ class ProductResource extends JsonResource
             'canonical_url' => $this->canonical_url,
             'category_name' => $this->category->title,
             'category_slug' => $this->category->slug,
+            'update_date' => Date::toJalaliFormat($this->updated_at),
         ];
     }
 
@@ -60,11 +63,18 @@ class ProductResource extends JsonResource
             'id' => $category->id,
             'parent_id' => $category->parent_id,
             'title' => $category->title,
+            'slug' => $category->slug,
             'image' => $category->apiPresent()->image,
             'image_alt' => $category->image_alt,
             'meta_title' => strip_tags($category->meta_title),
             'meta_description' => strip_tags($category->meta_description),
             'canonical_url' => $category->canonical_url,
+            'parent_category' => !is_null($category->parent)?
+                [
+                    'title' => $category->parent,
+                    'slug' => $category->parent
+                ]
+                : null,
         ];
     }
 }

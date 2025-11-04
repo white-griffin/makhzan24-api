@@ -27,7 +27,9 @@ class ProfileController extends Controller
             'last_name' => $user->last_name,
             'avatar' => $user->apiPresent()->avatar,
             'mobile' => $user->mobile,
-            'auth_status' => $user->auth_status
+            'auth_status' => $user->auth_status,
+            'national_code' => $user->national_code,
+            'email' => $user->email
         ];
     }
 
@@ -58,6 +60,12 @@ class ProfileController extends Controller
         }
         if (request()->has('last_name')) {
             $data['last_name'] = request('last_name');
+        }
+        if (request()->has('email')) {
+            $data['email'] = request('email');
+        }
+        if (request()->has('national_code')) {
+            $data['national_code'] = request('national_code');
         }
 
         return $data;

@@ -21,11 +21,12 @@ class OrderResource extends JsonResource
             'status' => $this->status,
             'delivery_status' => $this->delivery_status,
             'factor_data' => [
-                'order_amount' => $this->order_amount,
+                'order_amount' => $this->order_amount + $this->discount_amount,
                 'delivery_amount' => $this->delivery_amount,
                 'discount_amount' => $this->discount_amount,
                 'total_amount' => $this->total_amount,
-                'tax_amount' => $this->total_amount * 0.1
+                'tax_amount' => $this->total_amount * 0.1,
+                'order_date' => $this->updated_at
             ],
             'receiver_data' => !is_null($this->receiver) ? $this->getReceiverData($this->receiver) : null
         ];
@@ -54,7 +55,8 @@ class OrderResource extends JsonResource
             'national_code' => $receiver->national_code,
             'mobile' => $receiver->mobile,
             'email' => $receiver->email,
-            'address' => $receiver->address
+            'address' => $receiver->address,
+            'zip_code' => $receiver->zip_code
         ];
     }
 }

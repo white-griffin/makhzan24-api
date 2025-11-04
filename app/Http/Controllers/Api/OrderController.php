@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
+    public int $discountAmount =0;
+
     public function createOrder()
     {
         DB::beginTransaction();
@@ -36,8 +38,8 @@ class OrderController extends Controller
                 }
             }
             $cart = $this->getCart();
-            $discountAmount = $this->getDiscountAmount($discount_code,$cart['total_amount']);
-            $order = $this->createOrderRecord($user,$discount_code,$cart,$discountAmount);
+            $this->setDiscountCodeAmount($discount_code,$cart['total_amount']);
+            $order = $this->createOrderRecord($user,$discount_code,$cart);
 
             $this->createOrderItems($cart['items'],$order->id);
             $payment = $this->createPaymentRecord($user,$order);
@@ -74,9 +76,18 @@ class OrderController extends Controller
 
     private function getItemPrice($item)
     {
-        return $item->discount_status == Constant::ACTIVE ?
-            $item->price - ($item->price * $item->discount_percent /100) :
-            $item->price;
+
+        if ($item->discount_status == Constant::ACTIVE){
+
+            $price = $item->price - ($item->price * $item->discount_percent /100);
+
+            $this->discountAmount += ($item->price * $item->discount_percent /100);
+        }else{
+
+            $price = $item->price;
+        }
+
+        return $price;
     }
 
     private function getCart()
@@ -84,9 +95,10 @@ class OrderController extends Controller
         $cartItems = CartItem::where('user_id', request()->user()->id)
             ->with('product')
             ->get();
-        $itemsAmount =$cartItems->sum(function ($item) {
+        $itemsAmount = $cartItems->sum(function ($item) {
             return $item->quantity * $this->getItemPrice($item->product);
         });
+
         $deliveryAmount = $cartItems->sum(function ($item) {
             return $item->quantity * $item->delivery_amount;
         });
@@ -135,31 +147,29 @@ class OrderController extends Controller
         return $discount_code;
     }
 
-    private function getDiscountAmount($discount_code,$total_amount)
+    private function setDiscountCodeAmount($discount_code,$total_amount)
     {
 
-        $discountAmount = 0;
         if (!is_null($discount_code)){
             if ($discount_code->discount_type == Constant::AMOUNT){
-                $discountAmount = $discount_code->discount_amount;
+                $this->discountAmount = $discount_code->discount_amount;
             }else{
-                $discountAmount = ($total_amount * $discount_code->discount_percent / 100);
+                $this->discountAmount = ($total_amount * $discount_code->discount_percent / 100);
             }
         }
 
 
-        return $discountAmount;
     }
 
-    private function createOrderRecord($user,$discount_code,$cart,$discountAmount)
+    private function createOrderRecord($user,$discount_code,$cart)
     {
         $order = Order::create([
             'user_id' => $user->id,
             'discount_code_id' => !is_null($discount_code) ? $discount_code->id : null,
-            'order_amount' => $cart['items_amount'],
+            'order_amount' => $cart['items_amount'] *10,
             'delivery_amount' => $cart['delivery_amount'],
-            'discount_amount' => $discountAmount,
-            'total_amount' => ($cart['total_amount'] - $discountAmount)*1.1 /* اضافه شدن 10 درصد مبلغ مالیات به جمع مبلغ خرید*/,
+            'discount_amount' => $this->discountAmount,
+            'total_amount' => $cart['total_amount'] * 1.1 /* اضافه شدن 10 درصد مبلغ مالیات به جمع مبلغ خرید*/,
 			'description' => request('description')
         ]);
 
@@ -170,7 +180,8 @@ class OrderController extends Controller
             'national_code' => request('national_code'),
             'mobile' => request('mobile'),
             'email' => request('email'),
-            'address' => request('address')
+            'address' => request('address'),
+            'zip_code' => request('zip_code')
         ]);
         return  $order;
     }
@@ -189,7 +200,7 @@ class OrderController extends Controller
 
         $payRequest = Http::post('https://payment.zarinpal.com/pg/v4/payment/request.json', [
             'merchant_id' => env('ZARINPAL_MERCHANT_ID'),
-            'amount' => (int)$payment->amount,
+            'amount' => (int)$payment->amount *10,
             'callback_url' => route('payment.callback'),
             'description' => 'خرید محصول',
         ]);
@@ -272,6 +283,7 @@ class OrderController extends Controller
             }
         }catch (\Exception $e){
             DB::rollBack();
+            Log::error($paymentVerify);
             return view('user.payments.failed-pay');
         }
 
@@ -282,9 +294,10 @@ class OrderController extends Controller
     {
         $verifyRequest = Http::post('https://payment.zarinpal.com/pg/v4/payment/verify.json', [
             'merchant_id' => env('ZARINPAL_MERCHANT_ID'),
-            'amount' => $payment->amount,
+            'amount' => $payment->amount *10,
             'authority' => $payment->transaction_id,
         ]);
+        Log::error($verifyRequest->json());
         return $verifyRequest->json();
     }
 

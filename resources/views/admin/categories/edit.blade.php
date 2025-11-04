@@ -45,7 +45,7 @@
                             </div>
                             <div class="col-md-4">
                                 <!--begin::Label-->
-                                <label class="required form-label">دسته بندی والد </label>
+                                <label class=" form-label">دسته بندی والد </label>
                                 <!--end::Label-->
                                 <select class="form-control  form-select form-select-solid" id="parent_category" name="parent_category">
                                     @if(isset($category->parent_id) && $category->parent_id != null)
