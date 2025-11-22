@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\{File, Http};
 use App\Helpers\Hash\HashGenerator;
 use DateTime;
 use DateTimeZone;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Http;
+use Kavenegar;
+use Kavenegar\Exceptions\{ApiException, HttpException};
 
 abstract class Controller
 {
@@ -47,6 +48,23 @@ abstract class Controller
             return $e->getMessage();
         }
     }
+
+    public function sendOtpKaveNegar($otp,$receptor)
+    {
+        try{
+            $sender = "200033155";
+            $result = Kavenegar::VerifyLookup($receptor,$otp,'','','login');
+
+            return true;
+        }
+        catch(ApiException $e){
+            return $e->getMessage();
+        }
+        catch(HttpException $e){
+            return $e->getMessage();
+        }
+    }
+
 
     public function sendSmsWithPattern($patternCode,$receptorName,$receptorNumber){
         try {
