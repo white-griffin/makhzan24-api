@@ -45,7 +45,8 @@ class AuthenticationController extends Controller
             $otp_code = mt_rand(1000, 9999);
             $user->otp_code = $otp_code;
             $user->save();
-            $sendOtp = $this->sendOtp($otp_code,request('mobile'));
+            // $sendOtp = $this->sendOtp($otp_code,request('mobile'));
+            $sendOtp = $this->sendOtpKaveNegar($otp_code,request('mobile'));
             if ($sendOtp == 'Success'){
                 return ApiResponse::Success($sendOtp);
             }else{
