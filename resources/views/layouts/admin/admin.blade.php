@@ -15,7 +15,7 @@
     <meta property="og:site_name">
     <meta name="_token" content="{{ csrf_token() }}">
     <link rel="canonical" href=""/>
-    <link rel="shortcut icon" href="{{ asset('admin-assets/media/logos/logo.png') }}"/>
+    <link rel="shortcut icon" href="{{ asset('admin-assets/media/logos/fav-logo.png') }}"/>
     <!--begin::Fonts-->
 {{--    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700"/>--}}
     <!--end::Fonts-->
