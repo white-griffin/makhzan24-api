@@ -2,24 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\{Request, Response};
+use Illuminate\Support\Facades\{DB, Http, Log, Validator};
 use App\Constants\Constant;
 use App\Helpers\Api\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
-use App\Models\CartItem;
-use App\Models\DiscountCode;
-use App\Models\Order;
-use App\Models\OrderItem;
-use App\Models\OrderReceiver;
-use App\Models\Payment;
-use App\Models\User;
+use App\Models\{CartItem, DiscountCode, Order, OrderItem, OrderReceiver, Payment, User};
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
@@ -255,7 +245,7 @@ class OrderController extends Controller
                     }
                     DB::commit();
                     $reciver = $this->getReceiverData($paymentRecord->order->receiver);
-                    $sendOrderSms = $this->sendSmsWithPattern(3526,$reciver['fullName'],$reciver['mobile']);
+                    $sendOrderSms = $this->sendOrderMessage($reciver['fullName'],$reciver['mobile']);
                     Log::info($sendOrderSms);
                     return view('user.payments.success-pay');
                 }elseif ($paymentVerify['data']['code'] == 101){

@@ -66,24 +66,45 @@ abstract class Controller
     }
 
 
-    public function sendSmsWithPattern($patternCode,$receptorName,$receptorNumber){
-        try {
-            $response = Http::get('https://portal.amootsms.com/rest/SendWithPattern', [
-                'Token'         => env('AMOOT_OTP_SERVICE_TOKEN'),
-                'Mobile'        => $receptorNumber,
-                'PatternCodeID' => $patternCode,
-                'PatternValues' => $receptorName
-            ]);
+    // public function sendSmsWithPattern($patternCode,$receptorName,$receptorNumber){
+    //     try {
+    //         $response = Http::get('https://portal.amootsms.com/rest/SendWithPattern', [
+    //             'Token'         => env('AMOOT_OTP_SERVICE_TOKEN'),
+    //             'Mobile'        => $receptorNumber,
+    //             'PatternCodeID' => $patternCode,
+    //             'PatternValues' => $receptorName
+    //         ]);
 
-            $data = $response->json();
+    //         $data = $response->json();
 
-            if ($response->successful()) {
-                return $data['Status'] ?? 'No Status';
-            } else {
-                return 'خطا در پاسخ سرور: ' . ($data['Message'] ?? 'خطای ناشناخته');
-            }
+    //         if ($response->successful()) {
+    //             return $data['Status'] ?? 'No Status';
+    //         } else {
+    //             return 'خطا در پاسخ سرور: ' . ($data['Message'] ?? 'خطای ناشناخته');
+    //         }
 
-        } catch (\Exception $e) {
+    //     } catch (\Exception $e) {
+    //         return 'خطای استثنا: ' . $e->getMessage();
+    //     }
+
+    // }
+
+    public function sendOrderMessage($receptorName,$receptorNumber){
+        try{
+            $sender = "200033155";
+            $message = " عزیز،
+سفارش شما در مخزن۲۴ ثبت شده و در حال پردازش است
+با تشکر از خرید شما".$receptorName;
+            // $receptor = array($receptorNumber);
+            $result = Kavenegar::Send($sender,$receptorNumber,$message);
+
+        }
+        catch(\Kavenegar\Exceptions\ApiException $e){
+            // در صورتی که خروجی وب سرویس 200 نباشد این خطا رخ می دهد
+            return 'خطا در پاسخ سرور: ' . ($e->errorMessage() ?? 'خطای ناشناخته');;
+        }
+        catch(\Kavenegar\Exceptions\HttpException $e){
+            // در زمانی که مشکلی در برقرای ارتباط با وب سرویس وجود داشته باشد این خطا رخ می دهد
             return 'خطای استثنا: ' . $e->getMessage();
         }
 
