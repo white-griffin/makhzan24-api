@@ -81,4 +81,5 @@
             <span>{{ number_format($order->total_amount) }} تومان</span>
         </li>
     </ul>
+
 </div>
