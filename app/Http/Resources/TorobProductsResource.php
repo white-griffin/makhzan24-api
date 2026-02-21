@@ -17,7 +17,7 @@ class TorobProductsResource extends JsonResource
     {
         return [
             "page_unique" => (string)$this->id,
-            "page_url" => 'https://magrico.ir/single/'.$this->slug,
+            "page_url" => 'https://makhzan24.com//single/'.$this->slug,
             "product_group_id" => (string)$this->category->id,
             "title" => $this->title,
             "current_price" => (int)$this->price,

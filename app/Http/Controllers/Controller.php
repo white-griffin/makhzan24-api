@@ -92,16 +92,16 @@ abstract class Controller
     public function sendOrderMessage($receptorName,$receptorNumber){
         try{
             $sender = "200033155";
-            $message = " عزیز،
+            $message = $receptorName." عزیز،
 سفارش شما در مخزن۲۴ ثبت شده و در حال پردازش است
-با تشکر از خرید شما".$receptorName;
+با تشکر از خرید شما";
             // $receptor = array($receptorNumber);
             $result = Kavenegar::Send($sender,$receptorNumber,$message);
 
         }
         catch(\Kavenegar\Exceptions\ApiException $e){
             // در صورتی که خروجی وب سرویس 200 نباشد این خطا رخ می دهد
-            return 'خطا در پاسخ سرور: ' . ($e->errorMessage() ?? 'خطای ناشناخته');;
+            return 'خطا در پاسخ سرور: ' . ($e->errorMessage() ?? 'خطای ناشناخته');
         }
         catch(\Kavenegar\Exceptions\HttpException $e){
             // در زمانی که مشکلی در برقرای ارتباط با وب سرویس وجود داشته باشد این خطا رخ می دهد
